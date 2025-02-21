@@ -1,0 +1,32 @@
+const ROUTES = {
+  UPLOAD_IMAGES: "/utility/uploadImages",
+  CREATE_UTILITY: "/utility",
+  GET_STATIC_TYPES: "/staticType/all",
+  UPDATE_UTILITY: "/user/utility",
+  VERIFY_NFT_COLLECTION: "/user/utility/verify",
+  VERIFY_ONCHAIN_TASKS: "/user/utility/verifyOnchain",
+  VERIFY_RAFFLE_TASKS: "/user/utility/verifyExternal",
+  GET_RAFFLE_TASKS_STATUS: "/user/utility/listDetails",
+  GET_UTILITY_DETAILS: "/utility/id",
+  ENTER_DRAW: "/user/utility/joinRaffle",
+  CLAIM_UTILITY: "/user/utility/claimUtility",
+  REDEEM_REWARD: "/user/utility/redeemUtility",
+  GET_USER_WINNINGS: "/user/utility/getUserWinnings",
+  GET_ALL_NFTS: "/nft/wallet",
+  GET_COLLECTIONS: "/collection",
+  GET_COLLECTIONS_WITH_UTILITIES: "/user/utility/collections",
+  GET_COLLECTION_NAME: "/nft",
+  GET_COLLECTIONS_TRAITS: "/collection/traits",
+  NFT_DETAIL: "/nft/detail",
+  GET_POINTS_VALUE: "/score/user",
+  CHECK_TELEGRAM_BOT_STATUS: "/telegram/checkBot",
+  GET_REFERRAL_CODE: "/refer/generateId",
+  REGISTER_REFERRAL: "/refer/wallet",
+  CLAIM_REWARD: "/user/utility/claim-reward",
+  REDEEM_QUEST: "/user/utility/redeemQuest",
+  GET_ALL_COLLECTIONS: "/collection/featured-collections",
+  GET_USER_NFTS: "/user/utility/tokens",
+  GET_USER_SPACES:"/space/owner"
+};
+
+export default ROUTES;

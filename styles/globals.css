@@ -1,0 +1,669 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Numans&family=Space+Grotesk:wght@300;400;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Clash Display";
+  src: url("./ClashDisplay-Variable.ttf") format("truetype");
+  font-display: swap;
+}
+
+body {
+  font-family: "Numans", sans-serif !important;
+}
+
+.element-full-height {
+  height: 100vh; /* Fallback for browsers that handle vh normally */
+  height: calc(var(--vh, 1vh) * 100); /* Adjusted for mobile browsers */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+a,
+p {
+  color: white;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.font-size-large {
+  font-size: 1.25rem;
+}
+
+.totals-container {
+  display: flex;
+  justify-content: space-between; /* This will space out the child elements */
+  align-items: center; /* This aligns items vertically */
+}
+
+.total-loans-text,
+.total-volume-text {
+  margin: 20px; /* Adjust the margin as needed */
+}
+
+.background {
+  min-height: 100vh;
+  height: 100%;
+  width: 100%;
+  background-position: center center;
+}
+
+.color-bg {
+  background-color: #171717;
+  min-height: 100vh;
+  /* background-image: url("/images/final-bg.png"); */
+  height: 100%;
+  width: 100%;
+}
+
+.table-drop {
+  background-image: url("/images/final2-bg.png");
+}
+
+.green-gradient-bg {
+  background: linear-gradient(99.93deg, #00bb34 6.12%, #afff7e 87.23%);
+}
+
+.loader-wrapper {
+  min-height: inherit;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 1.5rem;
+  color: #fff;
+}
+.loader-wrapper p {
+  margin-top: 2rem;
+}
+
+.lds-dual-ring {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 6px solid #00bb34;
+  border-color: #00bb34 transparent #00bb34 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+*::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar {
+  height: 4px;
+  width: 3px;
+  background-color: rgb(20, 20, 20);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #464646;
+  border-radius: 10px;
+}
+
+.b-r-16 {
+  border-radius: 16px;
+}
+
+.font-size-15 {
+  font-size: 1.25rem;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  /* display: none; <- Crashes Chrome on hover */
+  -webkit-appearance: none;
+  margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+/* Tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: visible;
+  width: 300px;
+  background-color: #1f7634;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: calc(100%);
+  transform: translateY(-50%);
+  opacity: 1; /* Make the tooltip fully opaque by default */
+  transition: opacity 0.3s;
+}
+
+.tooltip .close-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 10px; /* Adjust the font size to make the button smaller */
+}
+
+.tooltip .close-btn:hover {
+  color: #ccc;
+}
+
+.tooltip .tooltiptext:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent #1f7634;
+  transform: rotate(180deg);
+}
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  min-height: 100vh;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Numans, sans-serif !important;
+}
+
+#telegram-login-streamnft_test_bot,
+#telegram-login-streamnft_prod_bot {
+  opacity: 0.01;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.react-datepicker {
+  min-width: fit-content !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+}
+
+.container {
+  overflow-x: hidden;
+  height: fit-content;
+  width: 100%;
+  background-color: #121212;
+  position: relative;
+}
+
+.center-text h1 {
+  color: white;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+@keyframes scroll {
+  0%,
+  45% {
+    transform: translateX(0);
+  }
+  55%,
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.hero-scroll {
+  animation: scroll 5s ease-in-out infinite alternate;
+}
+
+.gradient_styles {
+  background: linear-gradient(
+    137deg,
+    rgba(22, 25, 69, 0.15) 0%,
+    rgba(37, 92, 120, 0.15) 100%
+  ) !important;
+  box-shadow: 0px 4px 49px 0px rgba(0, 7, 72, 0.12) !important;
+  backdrop-filter: blur(7.5px) !important;
+}
+
+.gradient_styles input {
+  background: none;
+}
+
+.react-datepicker-wrapper {
+  width: 100%;
+}
+
+.react-datepicker {
+  background: #2c2c2c !important;
+  border-width: 2px !important;
+  z-index: 9999999999 !important;
+}
+
+.react-datepicker__current-month {
+  color: #8d8d8d !important;
+}
+
+.react-datepicker__header {
+  background: #2c2c2c !important;
+
+  color: #8d8d8d !important;
+}
+
+.react-datepicker__day-name {
+  color: #8d8d8d !important;
+}
+
+.react-datepicker__day {
+  color: #8d8d8d !important;
+  font-weight: 600 !important;
+}
+
+.react-datepicker__day--selected {
+  background: #00bb34 !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+}
+
+.tox-notifications-container .tox {
+  display: none !important;
+}
+
+.react-datepicker-time__header {
+  color: white !important;
+}
+
+input {
+  -webkit-text-fill-color: #d4d5d6 !important;
+}
+
+.lds-dual-ring {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
+}
+
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 36px;
+  height: 36px;
+  margin: 8px;
+  border-radius: 50%;
+  border: 3px solid #00bb44;
+  border-color: #00bb44 transparent #00bb44 transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+
+.gradient-border-outer {
+  height: fit-content;
+  width: fit-content;
+  padding: 2px;
+  background: linear-gradient(
+    155.14deg,
+    rgba(255, 255, 255, 0.15) -2.13%,
+    rgba(255, 255, 255, 0.15) 136.58%
+  );
+  box-shadow: 0px 4px 49px rgba(0, 7, 72, 0.12);
+  border-radius: 16px;
+}
+
+.gradient-border-inner {
+  height: fit-content;
+  width: fit-content;
+  border-radius: 16px;
+  background-color: rgba(0, 0, 0, 0.93);
+}
+
+.loader-wrapper {
+  min-height: inherit;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: "Poppins", sans-serif;
+  font-family: 500;
+  font-size: 1.5rem;
+  color: #fff;
+}
+.loader-wrapper p {
+  margin-top: 2rem;
+}
+
+@media screen and (max-width: 1280px) {
+}
+
+/* tooltip */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #1f7634;
+  color: #fff;
+  text-align: left;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: calc(100% + 10px);
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+
+.tooltip .tooltiptext:before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent #1f7634;
+  transform: rotate(180deg);
+}
+
+.slick-arrow.slick-next,
+.slick-arrow.slick-prev {
+  background-color: #428cff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  opacity: 0.8;
+  height: 30px;
+  width: 30px;
+}
+
+.slick-arrow.slick-next:hover,
+.slick-arrow.slick-prev:hover {
+  background-color: #2574f5;
+  opacity: 1;
+}
+
+.slick-prev::before,
+.slick-next::before {
+  display: none;
+}
+
+.slider1 .slick-slide > div {
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.slider-container .slick-slide {
+  transform: scale(0.8);
+  transition: all 0.4s ease-in-out;
+  padding: 40px 0;
+  cursor: default;
+  opacity: 0.4;
+}
+
+.slider-container .slick-current {
+  transform: scale(1.2);
+  cursor: pointer;
+  opacity: 1;
+}
+
+.slider-container .slick-current .rent {
+  background-color: #30b750 !important;
+}
+
+.slider-container .slick-current .loan {
+  background-color: #30b750 !important;
+}
+
+.slider-container .slick-current .utility {
+  background-color: #30b750 !important;
+}
+
+.slider-container .slick-current .rent-text h5 {
+  color: white !important;
+}
+
+.slider-container .slick-current .rent-text p {
+  color: #8fe6a4 !important;
+}
+
+.slider-container .slick-current .enter {
+  color: white !important;
+  background-color: #23963e !important;
+}
+
+.slider-container .slick-current .rent-button {
+  color: white !important;
+  border-color: white !important;
+}
+
+.slider-container .slick-current .loan-text {
+  color: white !important;
+}
+
+.slider-container .slick-arrow.slick-next,
+.slider-container .slick-arrow.slick-prev {
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  opacity: 0.8;
+  height: 30px;
+  width: 30px;
+  cursor: default;
+}
+
+.slider-container .slick-arrow.slick-next:hover,
+.slider-container .slick-arrow.slick-prev:hover {
+  background-color: transparent;
+  opacity: 1;
+}
+
+/* styles/globals.css */
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #0070f3;
+  color: white;
+  border-radius: 4px;
+}
+
+.btn-secondary {
+  background-color: #e2e8f0;
+  color: #333;
+  border-radius: 4px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.ql-container {
+  @apply bg-grayscale-22 text-white;
+}
+
+.ql-toolbar {
+  @apply bg-grayscale-22 border-none text-white;
+}
+
+.ql-toolbar button {
+  @apply text-white border-grayscale-22;
+}
+
+.ql-toolbar button:hover {
+  @apply bg-grayscale-22;
+}
+
+.ql-toolbar .ql-active {
+  @apply bg-black-4 text-white;
+}
+
+.ql-toolbar select {
+  @apply bg-grayscale-23 text-white border-grayscale-22;
+}
+
+.ql-editor::before {
+  @apply !text-white;
+}
+
+.ql-snow .ql-stroke {
+  stroke: #dcdcdc !important;
+}
+
+.ql-snow.ql-toolbar button:hover .ql-stroke,
+.ql-snow .ql-toolbar button:hover .ql-stroke,
+.ql-snow.ql-toolbar button:focus .ql-stroke,
+.ql-snow .ql-toolbar button:focus .ql-stroke,
+.ql-snow.ql-toolbar button.ql-active .ql-stroke,
+.ql-snow .ql-toolbar button.ql-active .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke,
+.ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke,
+.ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke,
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke,
+.ql-snow.ql-toolbar button:hover .ql-stroke-miter,
+.ql-snow .ql-toolbar button:hover .ql-stroke-miter,
+.ql-snow.ql-toolbar button:focus .ql-stroke-miter,
+.ql-snow .ql-toolbar button:focus .ql-stroke-miter,
+.ql-snow.ql-toolbar button.ql-active .ql-stroke-miter,
+.ql-snow .ql-toolbar button.ql-active .ql-stroke-miter,
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke-miter,
+.ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke-miter,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke-miter,
+.ql-snow.ql-toolbar .ql-picker-item:hover .ql-stroke-miter,
+.ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke-miter,
+.ql-snow.ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter,
+.ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke-miter {
+  stroke: #2c65ce !important;
+}
+
+#ql-picker-options-0 {
+  @apply bg-grayscale-22 !text-white;
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item::before {
+  @apply text-[#dcdcdc];
+}
+
+.ql-toolbar.ql-snow {
+  @apply !border-l-0 !border-r-0 !border-t-0;
+}
+
+.ql-container.ql-snow {
+  @apply !border-l-0 !border-r-0 !border-b-0;
+}
+
+.angled-lines {
+  background: repeating-linear-gradient(
+    110deg,
+    rgba(255, 255, 255, 0.4),
+    rgba(255, 255, 255, 0.4) 3px,
+    transparent 3px,
+    transparent 15px
+  );
+}
+
+.Toastify {
+  padding: 8px;
+}
+
+.wallet-adapter-button-trigger {
+  background-color: #00bb34 !important;
+  box-shadow: 4px 4px 0px 0px #0a7128;
+  padding: 0 1rem;
+  height: 40px !important;
+}
