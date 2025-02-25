@@ -1,4 +1,4 @@
-import QuillTextEditor from "@/components/Reusables/QuillTextEditor";
+// import QuillTextEditor from "@/components/Reusables/QuillTextEditor";
 import React from "react";
 
 const CustomInput = ({
@@ -44,10 +44,7 @@ const CustomInput = ({
             }`}
           />
         ) : textEditor ? (
-          <QuillTextEditor
-            field={reactHookFormRegister}
-            placeholder={placeholder}
-          />
+          <textarea field={reactHookFormRegister} placeholder={placeholder} />
         ) : (
           <>
             {withGradientBorder ? (
