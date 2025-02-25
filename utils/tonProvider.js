@@ -204,10 +204,8 @@ export const getTonAssetData = async (collection) => {
 async function getOnChainData(tokenAddress) {
   const token = Address.parse(tokenAddress);
   try {
-    console.log(token.toString());
-    await new Promise((resolve) => setTimeout(resolve, 2500));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     const _s = await CONTRACT.getGetState();
-    console.log(_s);
     const state = _s.get(token);
     if (state) {
       return state;
