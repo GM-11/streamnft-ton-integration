@@ -1,4 +1,4 @@
-// import QuillTextEditor from "@/components/Reusables/QuillTextEditor";
+import QuillTextEditor from "@/components/Reusables/QuillTextEditor";
 import React from "react";
 
 const CustomInput = ({
@@ -44,14 +44,9 @@ const CustomInput = ({
             }`}
           />
         ) : textEditor ? (
-          <textarea
-            {...props}
-            {...reactHookFormRegister}
+          <QuillTextEditor
+            field={reactHookFormRegister}
             placeholder={placeholder}
-            readOnly={readOnly}
-            className={`h-12 w-full rounded-lg px-4 text-sm text-faded-white placeholder:text-faded-white bg-grayscale-22 focus:outline-none p-4 ${
-              inputClasses ?? ""
-            }`}
           />
         ) : (
           <>

@@ -10,6 +10,7 @@ import Script from "next/script";
 import Router, { useRouter } from "next/router";
 import { GlobalProvider } from "@/context/GlobalContext";
 import AppProvider from "@/context/AppProvider";
+import { MANIFEST_URL } from "streamnft-ton-sdk";
 
 import { TonConnectUIProvider } from "@tonconnect/ui-react";
 
@@ -64,11 +65,7 @@ export default function App({ Component, pageProps }) {
   };
 
   return (
-    <TonConnectUIProvider
-      manifestUrl={
-        "https://amber-just-earwig-230.mypinata.cloud/ipfs/bafkreif4rizf27txk3mwarxpulkkmxl5qz22iloo775vhpvx2ujzk3zmga"
-      }
-    >
+    <TonConnectUIProvider manifestUrl={MANIFEST_URL}>
       <Fragment>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-L6L7HJ1GZD"

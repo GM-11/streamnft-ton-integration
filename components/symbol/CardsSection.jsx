@@ -30,8 +30,6 @@ const CardsSection = ({
   const { isConnected, address } = useUserWalletContext();
   const { openConnectModal } = useConnectModal();
 
-  console.log({ cardsData });
-
   if (!isConnected && !router.pathname.includes("marketplace")) {
     return (
       <div className="flex flex-col w-full items-center justify-center ">

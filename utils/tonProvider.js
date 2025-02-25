@@ -223,12 +223,9 @@ export const fetchTonNFTs = async (walletAddress, collectionAddress) => {
     const owner = Address.parse(walletAddress);
     console.log("fetcing");
     const _n = await ta.accounts.getAccountNftItems(owner, { collection });
-    console.log(_n.nftItems);
     let items = [];
     for (let i = 0; i < _n.nftItems.length; i++) {
       const n = _n.nftItems[i];
-      console.log(n);
-      console.log(typeof n);
       items.push({
         image: n.previews[2].url,
         tokenId: n.address.toString(),

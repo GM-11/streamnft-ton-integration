@@ -219,20 +219,55 @@ export const StyledWalletButton2 = () => {
     try {
       if (wallet) {
         console.log("ton already connected");
-        console.log(tonConnectUI.account.address);
         tonConnectUI.disconnect();
         setWalletAddress("Connect");
       } else {
         await tonConnectUI.openModal();
-        if (wallet) {
-          console.log(wallet.account.address);
-          setWalletAddress(wallet.account.address || "Connected");
-        }
+
+        // Set up wallet change listener
+        tonConnectUI.onStatusChange((wallet) => {
+          if (wallet) {
+            // Use the user-friendly address format
+            const friendlyAddress = useTonAddress(true);
+            setWalletAddress(friendlyAddress || "Connected");
+            console.log("TON wallet status changed:", friendlyAddress);
+          } else {
+            setWalletAddress("Connect");
+            console.log("TON wallet disconnected");
+          }
+        });
       }
     } catch (error) {
       console.error("Ton wallet connection failed:", error);
+      setWalletAddress("Connect");
     }
-  }, []);
+  }, [tonConnectUI, wallet]);
+
+  // Add useEffect to handle initial wallet state and cleanup
+  useEffect(() => {
+    if (chainDetail?.chain_id === "ton") {
+      // Set up initial wallet status
+      if (wallet) {
+        setWalletAddress(userFriendlyAddress || "Connected");
+      }
+
+      // Set up wallet change listener
+      const unsubscribe = tonConnectUI.onStatusChange((wallet) => {
+        if (wallet) {
+          setWalletAddress(userFriendlyAddress || "Connected");
+        } else {
+          setWalletAddress("Connect");
+        }
+      });
+
+      // Cleanup function
+      return () => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+      };
+    }
+  }, [chainDetail?.chain_id, wallet, tonConnectUI, userFriendlyAddress]);
 
   const connectWallet = useCallback(() => {
     switch (chainDetail?.chain_id) {

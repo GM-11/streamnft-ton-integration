@@ -1,5 +1,5 @@
 import React from "react";
-// import QuillTextEditor from "../QuillTextEditor";
+import QuillTextEditor from "../QuillTextEditor";
 
 const Input = ({
   reactHookFormRegister,
@@ -16,7 +16,7 @@ const Input = ({
   methods,
   placeholder,
   disableEffect,
-  readOnly,
+  readOnly, 
   ...props
 }) => {
   return (
@@ -35,20 +35,16 @@ const Input = ({
             {...props}
             {...reactHookFormRegister}
             placeholder={placeholder}
-            readOnly={readOnly}
+            readOnly={readOnly} 
             className={` h-12 w-full rounded-lg px-4 text-sm text-faded-white placeholder:text-faded-white bg-grayscale-22 focus:outline-none p-4 ${
               inputClasses ?? ""
             }`}
           />
         ) : textEditor ? (
-          <textarea
-            {...props}
-            {...reactHookFormRegister}
+          <QuillTextEditor
+            field={reactHookFormRegister}
             placeholder={placeholder}
-            readOnly={readOnly}
-            className={`h-12 w-full rounded-lg px-4 text-sm text-faded-white placeholder:text-faded-white bg-grayscale-22 focus:outline-none p-4 ${
-              inputClasses ?? ""
-            }`}
+            readOnly={readOnly} 
           />
         ) : (
           <>
@@ -61,7 +57,7 @@ const Input = ({
                       {...reactHookFormRegister}
                       {...props}
                       placeholder={placeholder}
-                      readOnly={readOnly}
+                      readOnly={readOnly} 
                       className={`text-sm px-4 grow bg-[rgba(0,0,0,0)] text-faded-white placeholder:text-faded-white focus:outline-none bg-grayscale-22 ${
                         inputClasses ?? ""
                       }`}
