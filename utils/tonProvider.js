@@ -142,6 +142,7 @@ export const getTonAssetData = async (collection) => {
   for (let i = 0; i < _n.nftItems.length; i++) {
     const n = _n.nftItems[i];
     const data = await getOnChainData(n.address.toString());
+    if (Object.keys(data).length === 0) continue;
     if (Number(data.state) !== 3 && Number(data.state) !== 6) {
       rented.push({
         image: n.previews[2].url,
@@ -203,9 +204,16 @@ export const getTonAssetData = async (collection) => {
 async function getOnChainData(tokenAddress) {
   const token = Address.parse(tokenAddress);
   try {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
-    const state = (await CONTRACT.getGetState()).get(token);
-    return state;
+    console.log(token.toString());
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+    const _s = await CONTRACT.getGetState();
+    console.log(_s);
+    const state = _s.get(token);
+    if (state) {
+      return state;
+    } else {
+      return {};
+    }
   } catch (error) {
     console.log(error);
     throw error;

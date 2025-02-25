@@ -169,7 +169,17 @@ const rent = () => {
   }
 
   function isEmptyData(marketplaceData) {
-    return !marketplaceData.available.length && !marketplaceData.rented.length;
+    if (!marketplaceData) {
+      return true;
+    }
+
+    if (marketplace.available && marketplace.rented) {
+      return (
+        !marketplaceData.available.length && !marketplaceData.rented.length
+      );
+    } else {
+      return false;
+    }
   }
 
   useEffect(() => {
