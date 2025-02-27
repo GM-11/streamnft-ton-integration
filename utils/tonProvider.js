@@ -22,6 +22,7 @@ export const lendTonToken = async (
   rentExpiry,
   rentee,
   sender,
+  value,
 ) => {
   const rentState = {
     rate,
@@ -41,6 +42,7 @@ export const lendTonToken = async (
       rentState,
       sender,
       process.env.NEXT_PUBLIC_STREAMNFT_API_KEY,
+      value,
     );
     console.log(validityMinutes);
     if (res) {
@@ -78,13 +80,19 @@ export const cancelTonRent = async (tokenAddress, sender) => {
   }
 };
 
-export const processTonRent = async (tokenAddress, durationMinutes, sender) => {
+export const processTonRent = async (
+  tokenAddress,
+  durationMinutes,
+  sender,
+  value,
+) => {
   try {
     const res = await processRent(
       tokenAddress,
       durationMinutes,
       sender,
       process.env.NEXT_PUBLIC_STREAMNFT_API_KEY,
+      value,
     );
     console.log(res);
     if (res) {
@@ -153,13 +161,12 @@ export const getTonAssetData = async (collection) => {
         owner: data.initializer.toString(),
         rentType: data.rentState.isFixed ? "Fixed" : "Variable",
         ownerShare: Number(data.rentState.ownerShare),
-        rate: Number(data.rentState.rate) / Math.pow(10, 9),
-        rateValue: Number(data.rentState.rate) / Math.pow(10, 9),
-        ratePerHour: Number(data.rentState.rate) / Math.pow(10, 9),
+        rate: Number(data.rentState.rate) / Math.pow(10, 6),
+        rateValue: Number(data.rentState.rate) / Math.pow(10, 6),
+        ratePerHour: Number(data.rentState.rate) / Math.pow(10, 6),
         durationSeconds:
-          (new Date(Number(data.rentState.validityExpiry)).getMilliseconds() -
-            Date.now()) /
-          1000,
+          new Date(Number(data.rentState.validityExpiry)).getMilliseconds() -
+          Date.now(),
         fixedDuration: Number(data.rentState.fixedMinutes),
         maxTimeString: new Date(
           Number(data.rentState.validityExpiry),
@@ -179,13 +186,12 @@ export const getTonAssetData = async (collection) => {
         owner: data.initializer.toString(),
         rentType: data.rentState.isFixed ? "Fixed" : "Variable",
         ownerShare: Number(data.rentState.ownerShare),
-        rate: Number(data.rentState.rate) / Math.pow(10, 9),
-        rateValue: Number(data.rentState.rate) / Math.pow(10, 9),
-        ratePerHour: Number(data.rentState.rate) / Math.pow(10, 9),
+        rate: Number(data.rentState.rate) / Math.pow(10, 6),
+        rateValue: Number(data.rentState.rate) / Math.pow(10, 6),
+        ratePerHour: Number(data.rentState.rate) / Math.pow(10, 6),
         durationSeconds:
-          (new Date(Number(data.rentState.validityExpiry)).getMilliseconds() -
-            Date.now()) /
-          1000,
+          new Date(Number(data.rentState.validityExpiry)).getMilliseconds() -
+          Date.now(),
         fixedDuration: Number(data.rentState.fixedMinutes),
         maxTimeString: new Date(
           Number(data.rentState.validityExpiry),
@@ -227,7 +233,6 @@ export const fetchTonNFTs = async (walletAddress, collectionAddress) => {
 
     const collection = Address.parse(collectionAddress);
     const owner = Address.parse(walletAddress);
-    console.log("fetcing");
     const _n = await ta.accounts.getAccountNftItems(owner, { collection });
     let items = [];
     for (let i = 0; i < _n.nftItems.length; i++) {

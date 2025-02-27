@@ -96,7 +96,7 @@ const RentModal = (cardsData) => {
           setRentRate(r.toFixed(point || 2));
           setDisable(false);
         } else {
-          setRentRate("");
+          setRentRate(rate);
           setDisable(false);
         }
       }
@@ -298,7 +298,7 @@ const RentModal = (cardsData) => {
     } else if (selectedChain.toString().toUpperCase() === "TON") {
       try {
         let durationInMint = 0;
-
+        console.log(cardsData.cardsData.rent);
         if (cardsData.cardsData.rentType === "Fixed") {
           durationInMint = cardsData.cardsData.fixedDuration;
         } else {
@@ -308,10 +308,16 @@ const RentModal = (cardsData) => {
         console.log(cardsData.cardsData);
         console.log(durationInMint);
         console.log(conn.sender.address);
+
+        const rentPrice =
+          Number(cardsData.cardsData.rateValue) * (durationInMint / 60);
+
+        console.log(rentPrice);
         const res = await processTonRent(
           cardsData.cardsData.tokenAddress,
           durationInMint,
           conn.sender,
+          rentPrice,
         );
       } catch (error) {
         console.error("Error in lendTonToken:", error);
@@ -546,6 +552,26 @@ const RentModal = (cardsData) => {
                           : "Fixed Duration"}
                       </td>
                     </tr>
+                    <tr>
+                      <th>Duration</th>
+                      <td className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min="1"
+                          value={duration}
+                          onChange={(e) => setDuration(e.target.value)}
+                          className="w-20 bg-[#1E1E1E] border border-[#2E2E2E] rounded px-2 text-white"
+                        />
+                        <Dropdown
+                          selectedOption={timeScale}
+                          setSelectedOption={setTimeScale}
+                          customClass="w-24"
+                          state={timeScale}
+                          changeHandler={handleTimeScaleChange}
+                          body={["Hours", "Days", "Weeks", "Months"]}
+                        />
+                      </td>
+                    </tr>
                     {(cardsData.cardsData.ownerShare &&
                       Number(cardsData.cardsData.ownerShare) !== 100 &&
                       Number(cardsData.cardsData.ownerShare) !== 0 &&
@@ -601,7 +627,7 @@ const RentModal = (cardsData) => {
                     )}
                   </table>
                   <div className="flex flex-row gap-x-4">
-                    {cardsData.cardsData.rentType === "Variable" ? (
+                    {cardsData.cardsData.rentType !== "Fixed" ? (
                       <div className="half-input-wrapper">
                         <h5
                           className="mt-5 mb-2 px-3 text-white"

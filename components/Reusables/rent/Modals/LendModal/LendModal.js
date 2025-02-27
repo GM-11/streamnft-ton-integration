@@ -383,6 +383,7 @@ const LendModal = (cardsData) => {
           BigInt(Math.floor(Date.now() / 1000) + 24 * 60 * 60 * 5), // rentExpiry
           conn.sender.address, // rentee
           conn.sender, // sender
+          0.2,
         );
         if (res === "SUCCESS") {
           removeTokenFromNftArray(cardsData.cardsData.id);
