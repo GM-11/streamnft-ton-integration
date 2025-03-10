@@ -59,8 +59,9 @@ export const UserWalletProvider = ({ children }) => {
     switch (chainDetail?.chain_id) {
       case "ton":
         if (wallet) {
-          setAddress(wallet ? userFriendlyAddress.toString() : "");
-          setIsWalletConnected(userFriendlyAddress.toString().length !== 0);
+          setAddress(wallet ? wallet.account.address.toString() : "");
+          setIsWalletConnected(wallet.account.address.toString().length !== 0);
+          // setIsConnected()
           localStorage.setItem("token", "ton_wallet");
         }
         break;
@@ -115,6 +116,10 @@ export const UserWalletProvider = ({ children }) => {
   }, []);
 
   const checkLoginValidity = async () => {
+    if (wallet && wallet.account.address.toString().length !== 0) {
+      return true;
+    }
+
     const isUserOnSelectedChain =
       Number(chainDetail?.chain_id) === Number(chainIdRef?.current);
 

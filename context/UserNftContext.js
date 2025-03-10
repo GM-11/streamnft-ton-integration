@@ -1,201 +1,177 @@
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { ChainContext } from "./ChainContext";
-import { initHashpack } from "@/utils/hashConnectProvider";
-import { useWallet } from "@solana/wallet-adapter-react";
+import { createContext, useState, useEffect, useContext, useMemo } from "react";
 import { useAccount } from "wagmi";
-import { toast } from "react-toastify";
-import { isTokenExpired } from "@/utils/generalUtils";
-import { switchUserChain } from "@/utils/evmProvider";
-import { useGlobalContext } from "./GlobalContext";
-import { AUTHENTICATED } from "@/constants/globalConstants";
-import { useTonWallet, useTonAddress } from "@tonconnect/ui-react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { ChainContext } from "@/context/ChainContext";
+import { HederaContext } from "./HederaContext";
+import { reloadNftCache } from "@/utils/apiRequests";
+import { nftCacheAxiosInstance } from "@/services/axios";
+import { useUserWalletContext } from "./UserWalletContext";
+import { useTonAddress } from "@tonconnect/ui-react";
+import { Address } from "ton";
+import { TonApiClient } from "@ton-api/client";
 
-const UserWalletContext = createContext();
+export const UserNftContext = createContext();
 
-export const UserWalletProvider = ({ children }) => {
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
-  const [address, setAddress] = useState("");
-  const [isTokenSet, setIsTokenSet] = useState(false);
-  const [isTokenValid, setIsTokenValid] = useState(true);
-  const [isTransactionOngoing, setIsTransactionOngoing] = useState(false);
-  const [showSignInModal, setShowSignInModal] = useState(false);
-  const [hasUserRejectedSignin, setHasUserRejectedSignin] = useState(false);
-  const userFriendlyAddress = useTonAddress(true);
-  const wallet = useTonWallet();
+const UserNftContextProvider = ({ children }) => {
+  const [fetching, setFetching] = useState(true);
+  const [isNftsLoaded, setIsNftsLoaded] = useState(true);
+  const { address, isConnected } = useUserWalletContext();
+  const { publicKey, connected } = useWallet();
+  const { chainDetail, collectionId } = useContext(ChainContext);
+  const { isPaired } = useContext(HederaContext);
+  const [userNfts, setUserNfts] = useState([]);
+  const rawAddress = useTonAddress(true);
 
-  const { connected, publicKey } = useWallet();
+  const [initialUserNfts, setInitialUserNfts] = useState([]);
 
-  const {
-    isConnected: isEvmWalletConnected,
-    address: evmAddress,
-    chainId,
-  } = useAccount();
+  const [usersNftsByCollection, setUsersNftsByCollection] = useState([]);
 
-  const { chainDetail } = useContext(ChainContext);
+  const addTokenInNftArray = (tokenId) => {
+    const tokenIdData = initialUserNfts?.find((el) => el.tokenId === tokenId);
 
-  const { authStatus } = useGlobalContext();
+    if (tokenIdData) {
+      const updatedUserNfts = userNfts?.[0]?.tokenId;
+      updatedUserNfts.push(tokenIdData);
 
-  const chainIdRef = useRef(chainId);
-
-  const isWalletConnectedRef = useRef(isWalletConnected);
-
-  useEffect(() => {
-    chainIdRef.current = chainId;
-  }, [chainId]);
-
-  useEffect(() => {
-    isWalletConnectedRef.current = isWalletConnected;
-  }, [isWalletConnected]);
-
-  useEffect(() => {
-    switch (chainDetail?.chain_id) {
-      case "ton":
-        if (wallet) {
-          setAddress(wallet ? wallet.account.address.toString() : "");
-          setIsWalletConnected(wallet.account.address.toString().length !== 0);
-          // setIsConnected()
-          localStorage.setItem("token", "ton_wallet");
-        }
-        break;
-      case "296":
-        const hashconnectData = localStorage.getItem("hashconnectData");
-        if (hashconnectData && JSON.parse(hashconnectData).pairingData[0]) {
-          initHashpack().then(() => {
-            if (hashconnectData && hashconnectData.pairingData.length > 0) {
-              const length = hashconnectData.pairingData.length;
-              setAddress(hashconnectData.pairingData[length - 1].accountIds[0]);
-            }
-            setIsWalletConnected(true);
-          });
-        } else {
-          setAddress("");
-          setIsWalletConnected(false);
-        }
-        break;
-      case "solana":
-        setAddress(connected ? publicKey?.toBase58() : "");
-        setIsWalletConnected(connected);
-        break;
-      default:
-        setAddress(isEvmWalletConnected ? evmAddress : "");
-        setIsWalletConnected(
-          isEvmWalletConnected && authStatus === AUTHENTICATED,
-        );
-        break;
-    }
-  }, [
-    chainDetail,
-    publicKey,
-    isEvmWalletConnected,
-    connected,
-    evmAddress,
-    authStatus,
-  ]);
-
-  useEffect(() => {
-    const listenStorageChange = async () => {
-      if (localStorage.getItem("token") === null) {
-        setIsTokenSet(false);
-      } else {
-        setIsTokenSet(true);
-      }
-    };
-
-    listenStorageChange(); // Run on component mount
-
-    window.addEventListener("storage", listenStorageChange);
-    return () => window.removeEventListener("storage", listenStorageChange);
-  }, []);
-
-  const checkLoginValidity = async () => {
-    if (wallet && wallet.account.address.toString().length !== 0) {
-      return true;
-    }
-
-    const isUserOnSelectedChain =
-      Number(chainDetail?.chain_id) === Number(chainIdRef?.current);
-
-    if (!isWalletConnectedRef?.current) {
-      document.getElementById("connect-button")?.click();
-      return false;
-    }
-
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      setIsTokenSet(false);
-      setIsTokenValid(false);
-      // setShowSignInModal(true);
-      toast.dismiss();
-      toast.error("Please sign in with your wallet to continue");
-      return false;
-    }
-
-    if (!isUserOnSelectedChain && chainDetail?.evm) {
-      toast.dismiss();
-      await switchUserChain(chainDetail?.chain_id);
-      toast.success(
-        "Switched to selected chain successfully, Please try again",
+      const uniqueUserNfts = updatedUserNfts.filter(
+        (nft, index, self) =>
+          index === self.findIndex((t) => t.tokenId === nft.tokenId),
       );
-      return false;
+      setUsersNftsByCollection(uniqueUserNfts);
+    } else {
+      setUsersNftsByCollection(userNfts?.[0]?.tokenId);
     }
-
-    return true;
   };
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
-      const userRejectedSigninFromLS =
-        localStorage.getItem("userRejectedSignin");
+  const removeTokenFromNftArray = (tokenId) => {
+    const updatedUserNfts = usersNftsByCollection.filter(
+      (el) => el.tokenId !== tokenId,
+    );
 
-      if (token) {
-        setIsTokenSet(true);
-      }
+    const uniqueUserNfts = updatedUserNfts.filter(
+      (nft, index, self) =>
+        index === self.findIndex((t) => t.tokenId === nft.tokenId),
+    );
 
-      if (userRejectedSigninFromLS) {
-        setHasUserRejectedSignin(true);
-      }
+    setUsersNftsByCollection(uniqueUserNfts);
+  };
+  const [manage, setManage] = useState(true);
+
+  const fetchTonNFTs = async (walletAddress, collectionAddress) => {
+    try {
+      const ta = new TonApiClient({
+        baseUrl: "https://testnet.tonapi.io/",
+        apiKey: process.env.NEXT_PUBLIC_TON_API_KEY,
+      });
+
+      const collection = Address.parse(collectionAddress);
+      const owner = Address.parse(walletAddress);
+      console.log("fetcing");
+      const _n = await ta.accounts.getAccountNftItems(owner, { collection });
+      console.log(_n);
+      return _n.nftItems;
+    } catch (error) {
+      console.error("Failed to fetch TON NFTs:", error);
+      return [];
     }
-  }, []);
+  };
 
-  const isConnected = useMemo(() => {
-    console.log({ isWalletConnected, isTokenSet });
-    return isWalletConnected && isTokenSet;
-  }, [isWalletConnected, isTokenSet]);
+  const fetchNFTs = async (walletAddress, collectionId) => {
+    try {
+      if (chainDetail?.chain_id.toUpperCase() === "TON") {
+        await fetchTonNFTs(walletAddress, collectionId);
+        return;
+      }
+
+      setFetching(true);
+      setIsNftsLoaded(false);
+      const response = await nftCacheAxiosInstance.get(
+        `/getNFTs/${chainDetail?.chain_id}/${walletAddress}?collection=${collectionId}`,
+      );
+      setUserNfts(response?.data?.result ?? []);
+      setInitialUserNfts(response?.data?.result?.[0]?.tokenId ?? []);
+
+      setUsersNftsByCollection(response?.data?.result?.[0]?.tokenId ?? []);
+    } catch (error) {
+      console.error("Failed to fetch NFTs:", { error });
+
+      setUserNfts([]);
+      setUsersNftsByCollection([]);
+    } finally {
+      setFetching(false);
+      setIsNftsLoaded(true);
+    }
+  };
+
+  const walletAddress = useMemo(() => {
+    if (chainDetail?.evm) return address;
+    if (chainDetail?.chain_id === "296") {
+      return JSON.parse(localStorage.getItem("hashconnectData"))
+        ?.pairingData?.[0]?.accountIds[0];
+    }
+    if (chainDetail?.chain_id === "solana" && connected) {
+      return publicKey?.toBase58();
+    }
+    if (chainDetail?.chain_id === "ton") {
+      return rawAddress.toString();
+    }
+
+    return "";
+  }, [chainDetail, address, publicKey, connected]);
+
+  useEffect(() => {
+    if (!isConnected && !isPaired && connected) {
+      return;
+    }
+    if (chainDetail?.chain_id && walletAddress && collectionId?.length > 0) {
+      fetchNFTs(walletAddress, collectionId);
+    }
+  }, [
+    walletAddress,
+    chainDetail,
+    collectionId,
+    isConnected,
+    connected,
+    isPaired,
+  ]);
+
+  const reloadNftCacheCall = async () => {
+    if (!walletAddress) {
+      return;
+    }
+
+    try {
+      const data = await reloadNftCache(
+        chainDetail?.chain_id,
+        walletAddress,
+        collectionId,
+      );
+
+      setUserNfts(data?.data ?? []);
+      setUsersNftsByCollection(data?.data?.[0]?.tokenId ?? []);
+    } catch (error) {
+      console.error("Failed to reload NFT cache:", error);
+    }
+  };
 
   return (
-    <UserWalletContext.Provider
+    <UserNftContext.Provider
       value={{
-        isConnected,
-        isTokenSet,
-        isTokenValid,
-        isTransactionOngoing,
-        setIsTransactionOngoing,
-        address,
-        checkLoginValidity,
-        setIsTokenSet,
-        setIsTokenValid,
-        showSignInModal,
-        setShowSignInModal,
-        hasUserRejectedSignin,
-        setHasUserRejectedSignin,
+        userNfts,
+        fetching,
+        isNftsLoaded,
+        reloadNftCacheCall,
+        addTokenInNftArray,
+        removeTokenFromNftArray,
+        usersNftsByCollection,
+        manage,
+        setManage,
+        setFetching,
       }}
     >
       {children}
-    </UserWalletContext.Provider>
+    </UserNftContext.Provider>
   );
 };
 
-export const useUserWalletContext = () => {
-  const context = useContext(UserWalletContext);
-  return context;
-};
+export default UserNftContextProvider;
