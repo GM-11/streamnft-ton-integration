@@ -35,7 +35,8 @@ import Loader from "@/components/Reusables/loan/Loader";
 import { useUserWalletContext } from "@/context/UserWalletContext";
 import { wagmiConfig } from "@/config/wagmiConfig";
 import { isTokenExpired } from "@/utils/generalUtils";
-import { useConnection as useTonConnection } from "@/hooks/useTonConnection";
+import { useTonConnection } from "@/hooks/useTonConnection";
+import { useTonWallet, useTonAddress } from "@tonconnect/ui-react";
 
 const RentModal = (cardsData) => {
   const [duration, setDuration] = useState(0);
@@ -70,8 +71,8 @@ const RentModal = (cardsData) => {
     address: address,
     config: wagmiConfig,
   });
-
-  const text = chainDetail.currency_symbol;
+  const tonwallet = useTonWallet();
+  const friendlyAddress = useTonAddress(true);
 
   useEffect(() => {
     if (
@@ -315,9 +316,12 @@ const RentModal = (cardsData) => {
         console.log(rentPrice);
         const res = await processTonRent(
           cardsData.cardsData.tokenAddress,
+          cardsData.cardsData.tokenId,
           durationInMint,
           conn.sender,
           rentPrice,
+          cardsData.cardsData.index,
+          cardsData.cardsData.initializer.toString(),
         );
       } catch (error) {
         console.error("Error in lendTonToken:", error);
@@ -403,6 +407,20 @@ const RentModal = (cardsData) => {
         chainDetail?.rpc_url,
       );
       setBalance(skaleBal);
+    } else if (selectedChain.toUpperCase().toString() === "TON") {
+      if (wallet) {
+        const url = `https://testnet.toncenter.com/api/v2/getAddressInformation?address=${friendlyAddress}`;
+
+        console.log(url);
+
+        const data = await fetch(url);
+
+        const result = await data.json();
+
+        console.log(result);
+
+        setBalance(`${Number(result.result.balance) / Math.pow(10, 9)}`);
+      }
     } else {
       setBalance(ethers?.formatEther(data?.value ?? 0));
     }
@@ -414,8 +432,8 @@ const RentModal = (cardsData) => {
 
   const bottomMessage = useMemo(() => {
     if (
-      Number(rentRate) > Number(balance) &&
-      getSeconds(timeScale, duration) < cardsData.cardsData.durationSeconds
+      // Number(rentRate) > Number(balance) &&
+      getSeconds(timeScale, duration) > cardsData.cardsData.durationSeconds
     ) {
       setDisable(true);
       return (
@@ -517,9 +535,14 @@ const RentModal = (cardsData) => {
                         ? cardsData.cardsData.name.substring(0, 30) + "..."
                         : cardsData.cardsData.name
                       : ""}
-                    <span className="text-white font-numans text-sm ml-2">
-                      #{cardsData.cardsData?.tokenId}
-                    </span>
+
+                    {cardsData.cardsData.chain_id === "TON" ? (
+                      <h1>{cardsData.cardsData?.tokenId}</h1>
+                    ) : (
+                      <span className="text-white font-numans text-sm ml-2">
+                        #{cardsData.cardsData?.tokenId}
+                      </span>
+                    )}
                   </h5>
                   <span>Duration: {cardsData.cardsData.timeLeft}</span>
                   <span>
@@ -552,26 +575,7 @@ const RentModal = (cardsData) => {
                           : "Fixed Duration"}
                       </td>
                     </tr>
-                    <tr>
-                      <th>Duration</th>
-                      <td className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          min="1"
-                          value={duration}
-                          onChange={(e) => setDuration(e.target.value)}
-                          className="w-20 bg-[#1E1E1E] border border-[#2E2E2E] rounded px-2 text-white"
-                        />
-                        <Dropdown
-                          selectedOption={timeScale}
-                          setSelectedOption={setTimeScale}
-                          customClass="w-24"
-                          state={timeScale}
-                          changeHandler={handleTimeScaleChange}
-                          body={["Hours", "Days", "Weeks", "Months"]}
-                        />
-                      </td>
-                    </tr>
+
                     {(cardsData.cardsData.ownerShare &&
                       Number(cardsData.cardsData.ownerShare) !== 100 &&
                       Number(cardsData.cardsData.ownerShare) !== 0 &&
@@ -585,7 +589,7 @@ const RentModal = (cardsData) => {
                               point,
                             )}
                           </span>
-                          {text} / Hour
+                          / Hour
                         </td>{" "}
                       </tr>
                     ) : (
@@ -737,7 +741,12 @@ const RentModal = (cardsData) => {
                   )}
                   <div className="flex flex-col items-start">
                     <h5 className="text-sm mb-2 text-left">
-                      {cardsData.cardsData.name} #{cardsData.cardsData?.tokenId}
+                      {cardsData.cardsData.name}{" "}
+                      {cardsData.cardsData.chain_id === "TON" ? (
+                        <h1> cardsData.cardsData?.tokenId</h1>
+                      ) : (
+                        `#${cardsData.cardsData?.tokenId}`
+                      )}
                     </h5>
                     <div className="w-full flex items-center mb-1">
                       <span className="w-16 text-grayscale-4 text-xs text-left">

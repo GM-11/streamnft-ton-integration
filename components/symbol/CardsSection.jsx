@@ -7,6 +7,11 @@ import { useUserWalletContext } from "@/context/UserWalletContext";
 import WalletIcon from "../../public/images/Wallet.svg";
 import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import {
+  useTonConnectUI,
+  useTonAddress,
+  useTonWallet,
+} from "@tonconnect/ui-react";
 import Button from "../Reusables/utility/Button";
 import Image from "next/image";
 
@@ -30,6 +35,26 @@ const CardsSection = ({
   const { isConnected, address } = useUserWalletContext();
   const { openConnectModal } = useConnectModal();
 
+  const [tonConnectUI, setOptions] = useTonConnectUI();
+
+  const connectTONWallet = async () => {
+    // Set up wallet change listener
+    const unsubscribe = tonConnectUI.onStatusChange((wallet) => {
+      if (wallet) {
+        // setWalletAddress(userFriendlyAddress || "Connected");
+      } else {
+        // setWalletAddress("Connect");
+      }
+    });
+
+    // Cleanup function
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  };
+
   if (!isConnected && !router.pathname.includes("marketplace")) {
     return (
       <div className="flex flex-col w-full items-center justify-center ">
@@ -40,7 +65,7 @@ const CardsSection = ({
           buttonClasses={
             "!w-fit !whitespace-nowrap flex gap-3 items-center !bg-green-4 !text-white"
           }
-          onClick={openConnectModal}
+          onClick={connectTONWallet}
         >
           <Image src={WalletIcon} height={16} width={16} alt="wallet" />
           Connect Wallet
@@ -94,10 +119,10 @@ const CardsSection = ({
           {cardsData
             // ?.sort((a, b) => parseFloat(a.saleprice) - parseFloat(b.saleprice))
             ?.map((item, index) => {
-              item = {
-                ...item,
-                buttonValue: pathname.includes("myassets") ? "Lend" : "Rent",
-              };
+              // item = {
+              //   ...item,
+              //   buttonValue: pathname.includes("myassets") ? "Lend" : "Rent",
+              // };
               return (
                 <LendRentCard
                   key={index}

@@ -228,9 +228,9 @@ export const StyledWalletButton2 = () => {
         tonConnectUI.onStatusChange((wallet) => {
           if (wallet) {
             // Use the user-friendly address format
-            const friendlyAddress = useTonAddress(true);
-            setWalletAddress(friendlyAddress || "Connected");
-            console.log("TON wallet status changed:", friendlyAddress);
+            // const friendlyAddress = useTonAddress(true);
+            setWalletAddress(wallet.account.address || "Connected");
+            console.log("TON wallet status changed:", wallet.account.address);
           } else {
             setWalletAddress("Connect");
             console.log("TON wallet disconnected");
