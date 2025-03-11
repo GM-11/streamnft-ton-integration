@@ -58,6 +58,10 @@ const abi = [
   },
 ];
 
+export const getBidPools = async () => {
+  return [];
+};
+
 const abi2 = [
   {
     inputs: [
@@ -117,7 +121,7 @@ export const addLendData = async (
   address,
   power,
   contractAddress,
-  paymentToken
+  paymentToken,
 ) => {
   try {
     const amountInWei = Number(bidAmount) * Math.pow(10, power);
@@ -128,7 +132,7 @@ export const addLendData = async (
       chainId,
       signer,
       contractAddress,
-      paymentToken
+      paymentToken,
     );
 
     const { success, error, data, txnHash } = res;
@@ -179,7 +183,7 @@ export const evmBorrowLoan = async (
   address,
   email,
   contractAddress,
-  isErc1155
+  isErc1155,
 ) => {
   try {
     let allowSigner;
@@ -191,7 +195,7 @@ export const evmBorrowLoan = async (
       chainId,
       tokenAddress,
       tokenID,
-      isErc1155
+      isErc1155,
     );
 
     if (
@@ -229,7 +233,7 @@ export const evmBorrowLoan = async (
         tokenAddress,
         contractAddress,
         walletSigner,
-        chainId
+        chainId,
       );
     } else {
       allowSigner = await approveToken(
@@ -237,7 +241,7 @@ export const evmBorrowLoan = async (
         contractAddress,
         tokenID,
         walletSigner,
-        chainId
+        chainId,
       );
     }
 
@@ -252,7 +256,7 @@ export const evmBorrowLoan = async (
         chainId,
         walletSigner,
         null,
-        contractAddress
+        contractAddress,
       );
 
       const { success, error, data, txnHash } = res;
@@ -309,7 +313,7 @@ export const evmCancelOffer = async (
   signer,
   contractAddress,
   walletAddress,
-  reloadCall
+  reloadCall,
 ) => {
   try {
     const res = await removeLoanOffer(
@@ -317,7 +321,7 @@ export const evmCancelOffer = async (
       bidManagerIndex,
       chainId,
       signer,
-      contractAddress
+      contractAddress,
     );
 
     const { success, txnHash, error, data } = res;
@@ -367,7 +371,7 @@ export const evmRepay = async (
   isErc1155,
   index,
   walletAddress,
-  paymentToken
+  paymentToken,
 ) => {
   try {
     const res = await repayLoan(
@@ -377,7 +381,7 @@ export const evmRepay = async (
       chainId,
       signer,
       contractAddress,
-      paymentToken
+      paymentToken,
     );
 
     const { success, error, txnHash, data } = res;
@@ -422,7 +426,7 @@ export const updateOfferAmountEvm = async (
   power,
   contractAddress,
   paymentToken,
-  address
+  address,
 ) => {
   try {
     const amountInWei = Number(updatedOffer) * Math.pow(10, power);
@@ -434,7 +438,7 @@ export const updateOfferAmountEvm = async (
       chainId,
       signer,
       contractAddress,
-      paymentToken
+      paymentToken,
     );
 
     const { success, error, txnHash, data } = res;
@@ -481,7 +485,7 @@ export const updateOfferCountEvm = async (
   signer,
   contractAddress,
   paymentToken,
-  address
+  address,
 ) => {
   try {
     const res = await updateOfferCount(
@@ -491,7 +495,7 @@ export const updateOfferCountEvm = async (
       chainId,
       signer,
       contractAddress,
-      paymentToken
+      paymentToken,
     );
 
     const { success, error, txnHash, data } = res;
@@ -538,7 +542,7 @@ export const evmRequestOffer = async (
   contractAddress,
   isErc1155,
   onComplete,
-  onError
+  onError,
 ) => {
   try {
     const amountInWei = Number(amount) * Math.pow(10, power);
@@ -551,7 +555,7 @@ export const evmRequestOffer = async (
       chainId,
       tokenAddress,
       tokenID,
-      isErc1155
+      isErc1155,
     );
 
     if (assetData?.data?.length > 0) {
@@ -584,7 +588,7 @@ export const evmRequestOffer = async (
           contractAddress,
           tokenID,
           signer,
-          chainId
+          chainId,
         );
 
     if (allowSigner.success) {
@@ -600,7 +604,7 @@ export const evmRequestOffer = async (
         chainId,
         signer,
         undefined,
-        contractAddress
+        contractAddress,
       );
 
       const { success, error, txnHash, data } = res;
@@ -616,7 +620,7 @@ export const evmRequestOffer = async (
             chainId,
             walletAddress,
             data,
-            txnHash
+            txnHash,
           );
           await onComplete();
           toast.success("Request Offer Created Successfully!");
@@ -662,7 +666,7 @@ export const evmAcceptOffer = async (
   signer,
   address,
   contractAddress,
-  paymentToken
+  paymentToken,
 ) => {
   try {
     const res = await acceptOffer(
@@ -673,7 +677,7 @@ export const evmAcceptOffer = async (
       signer,
       undefined,
       contractAddress,
-      paymentToken
+      paymentToken,
     );
 
     const { success, error, txnHash, data } = res;
@@ -715,7 +719,6 @@ export const evmAcceptOffer = async (
   }
 };
 
-
 export const evmNftCancel = async (
   tokenAddress,
   tokenId,
@@ -723,7 +726,7 @@ export const evmNftCancel = async (
   signer,
   contractAddress,
   index,
-  address
+  address,
 ) => {
   try {
     const res = await removeNFTPool(
@@ -733,7 +736,7 @@ export const evmNftCancel = async (
       chainId,
       signer,
       undefined,
-      contractAddress
+      contractAddress,
     );
 
     const { success, error, txnHash } = res;
@@ -745,7 +748,7 @@ export const evmNftCancel = async (
         chainId,
         index,
         txnHash,
-        address
+        address,
       );
       toast.success("NFT Pool Cancelled Successfully!");
       return response;
@@ -764,67 +767,67 @@ export const evmNftCancel = async (
     } else {
       toast.error("An unexpected error occurred during cancellation.");
     }
-  }}
+  }
+};
 
-  export const evmClaim = async (
-    tokenAddress,
-    tokenId,
-    index,
-    chainId,
-    signer,
-    contractAddress,
-    address
-  ) => {
-    try {
-      const res = await expireLoan(
-        tokenAddress,
-        tokenId,
-        index,
-        chainId,
-        signer,
-        contractAddress
+export const evmClaim = async (
+  tokenAddress,
+  tokenId,
+  index,
+  chainId,
+  signer,
+  contractAddress,
+  address,
+) => {
+  try {
+    const res = await expireLoan(
+      tokenAddress,
+      tokenId,
+      index,
+      chainId,
+      signer,
+      contractAddress,
+    );
+
+    const { success, error, txnHash } = res;
+
+    if (success) {
+      // await postExpireLoan(
+      //   tokenAddress,
+      //   tokenId,
+      //   chainId,
+      //   contractAddress,
+      //   index,
+      //   txnHash,
+      //   address
+      // );
+      toast.success(
+        "Claim your NFT! 🎉 . Loan unpaid? You're eligible for this exclusive NFT – grab it now!",
       );
-  
-      const { success, error, txnHash } = res;
-  
-      if (success) {
-        // await postExpireLoan(
-        //   tokenAddress,
-        //   tokenId,
-        //   chainId,
-        //   contractAddress,
-        //   index,
-        //   txnHash,
-        //   address
-        // );
-        toast.success(
-          "Claim your NFT! 🎉 . Loan unpaid? You're eligible for this exclusive NFT – grab it now!"
-        );
+    } else {
+      if (error === 4001) {
+        toast.error("User rejected the request");
       } else {
-        if (error === 4001) {
-          toast.error("User rejected the request");
-        } else {
-          const errorText = getErrorMessage(error);
-          toast.error(errorText || "Transaction Failed");
-        }
-      }
-    } catch (e) {
-      console.error("Caught an error in evmClaim:", e);
-      if (e?.message) {
-        toast.error(`Transaction Failed: ${e.message}`);
-      } else {
-        toast.error("An unexpected error occurred during claim.");
+        const errorText = getErrorMessage(error);
+        toast.error(errorText || "Transaction Failed");
       }
     }
-  };
-  
+  } catch (e) {
+    console.error("Caught an error in evmClaim:", e);
+    if (e?.message) {
+      toast.error(`Transaction Failed: ${e.message}`);
+    } else {
+      toast.error("An unexpected error occurred during claim.");
+    }
+  }
+};
 
 export const mintNft = async (
   tokenAddress,
   address,
   signer,
   onComplete,
-  onError
+  onError,
 ) => {
   const contract = new ethers.Contract(tokenAddress, abi, signer);
 
@@ -900,7 +903,7 @@ export const getUserCollection = async (wallet) => {
 export const getCollectionDetails = async (tokenAddress) => {
   try {
     const response = await shopAxiosInstance.get(
-      `/collection/fetch/${tokenAddress}`
+      `/collection/fetch/${tokenAddress}`,
     );
 
     if (response.status !== 200) {
@@ -924,7 +927,7 @@ export async function mintNftOpenCampus(
   onComplete,
   onError,
   metadata,
-  mintType
+  mintType,
 ) {
   let uploadLink = "";
   const contract = new ethers.Contract(tokenAddress, MyNFT.abi, signer);
@@ -972,7 +975,6 @@ export async function mintNftOpenCampus(
 
 //token supply in create collection is only for 721,token supply in mint is amount of that nft
 
-
 export const sellNftCall = async (
   tokenId,
   tokenAddress,
@@ -981,7 +983,7 @@ export const sellNftCall = async (
   chainId,
   signer,
   isErc1155,
-  contractAddress
+  contractAddress,
 ) => {
   try {
     let allowSigner;
@@ -993,7 +995,7 @@ export const sellNftCall = async (
         tokenAddress,
         contractAddress,
         signer,
-        chainId
+        chainId,
       );
     } else {
       type = "ERC721";
@@ -1002,7 +1004,7 @@ export const sellNftCall = async (
         contractAddress,
         tokenId,
         signer,
-        chainId
+        chainId,
       );
     }
 
@@ -1017,7 +1019,7 @@ export const sellNftCall = async (
       1,
       chainId,
       signer,
-      contractAddress
+      contractAddress,
     );
 
     if (!result?.success) {
@@ -1061,7 +1063,7 @@ export const buyNftCall = async (
   contractAddress,
   address,
   count,
-  index
+  index,
 ) => {
   try {
     const result = await buyListedNFT(
@@ -1071,10 +1073,10 @@ export const buyNftCall = async (
       index, //master index
       count,
       signer,
-      contractAddress
+      contractAddress,
     );
 
-    console.log({result});
+    console.log({ result });
 
     if (!result?.success) {
       if (result?.error === 4001) {
@@ -1083,7 +1085,7 @@ export const buyNftCall = async (
         console.error("Lend token failed:", result);
         const errorText = getErrorMessage(result.error);
         toast.error(
-          errorText || result.error || "Transaction failed while buying token."
+          errorText || result.error || "Transaction failed while buying token.",
         );
       }
 
@@ -1121,7 +1123,7 @@ export const cancelListingCall = async (
   isErc1155,
   contractAddress,
   address,
-  count
+  count,
 ) => {
   try {
     const result = await cancelListing(
@@ -1131,7 +1133,7 @@ export const cancelListingCall = async (
       count,
       chainId,
       signer,
-      contractAddress
+      contractAddress,
     );
     if (result?.success) {
       // const jsonBody = {
@@ -1183,7 +1185,7 @@ export const lendTokenEvm = async (
   referredId,
   userAddress,
   signer,
-  isPrivateRental
+  isPrivateRental,
 ) => {
   try {
     const walletSigner = signer;
@@ -1197,7 +1199,7 @@ export const lendTokenEvm = async (
         tokenAddress,
         contractAddress,
         walletSigner,
-        chainSelection
+        chainSelection,
       );
     } else {
       type = "ERC721";
@@ -1206,7 +1208,7 @@ export const lendTokenEvm = async (
         contractAddress,
         tokenId,
         walletSigner,
-        chainSelection
+        chainSelection,
       );
     }
 
@@ -1227,7 +1229,7 @@ export const lendTokenEvm = async (
         walletSigner,
         env,
         contractAddress,
-        isPrivateRental
+        isPrivateRental,
       );
 
       if (res.success) {
@@ -1302,7 +1304,7 @@ export const cancelEvmRent = async (
   address,
   index,
   masterIndex,
-  signer
+  signer,
 ) => {
   try {
     const walletSigner = signer;
@@ -1317,7 +1319,7 @@ export const cancelEvmRent = async (
       walletSigner,
       env,
       contractAddress,
-      chainSelection
+      chainSelection,
     );
 
     const { success, txnHash, data } = res;
@@ -1363,7 +1365,6 @@ export const cancelEvmRent = async (
   }
 };
 
-
 export const processEvmRent = async (
   tokenAddress,
   tokenId,
@@ -1378,7 +1379,7 @@ export const processEvmRent = async (
   masterIndex,
   state,
   signer,
-  paymentToken
+  paymentToken,
 ) => {
   try {
     const walletSigner = signer;
@@ -1402,7 +1403,7 @@ export const processEvmRent = async (
       walletSigner,
       env,
       contractAddress,
-      paymentToken
+      paymentToken,
     );
 
     const { success, txnHash, data } = res;

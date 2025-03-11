@@ -35,7 +35,7 @@ import Loader from "@/components/Reusables/loan/Loader";
 import { useUserWalletContext } from "@/context/UserWalletContext";
 import { wagmiConfig } from "@/config/wagmiConfig";
 import { isTokenExpired } from "@/utils/generalUtils";
-import { useTonConnection } from "@/hooks/useTonConnection";
+import { useConnection as useTonConnection } from "@/hooks/useTonConnection";
 import { useTonWallet, useTonAddress } from "@tonconnect/ui-react";
 
 const RentModal = (cardsData) => {

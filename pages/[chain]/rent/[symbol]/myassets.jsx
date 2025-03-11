@@ -30,7 +30,7 @@ import dynamic from "next/dynamic";
 import { useUserWalletContext } from "@/context/UserWalletContext";
 import DiscoverCenterBar from "@/components/symbol/DiscoverCenterBar";
 import FilterComponent from "@/components/symbol/DiscoverFilter";
-import { useConnection } from "@/hooks/useTonConnection";
+import { useConnection as useTonConnection } from "@/hooks/useTonConnection";
 
 const lend = () => {
   const { modalType, setModalType } = useContext(ModalContext);
@@ -51,7 +51,7 @@ const lend = () => {
 
   const { connected } = useWallet();
   const { isConnected, address } = useUserWalletContext();
-  const conn = useConnection();
+  const conn = useTonConnection();
   const { isPaired, accountId, nftSignal } = useContext(HederaContext);
 
   const {
