@@ -363,4 +363,3 @@ export const fetchUserListedNfts = async (user, collection, state) => {
   }
   return n;
 };
-s;
