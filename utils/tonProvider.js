@@ -39,17 +39,14 @@ export const lendTonToken = async (
   };
 
   try {
-    // This is handled inside the SDK now, but keeping it for reference
-    // localStorage.setItem("lendTokenData", JSON.stringify({ ... }));
-
     const res = await lendToken(
       tokenAddress,
       validityMinutes,
       rentState,
       sender,
-      value,
-      privateRental, // Added missing parameter
-      collectionAddress, // Added missing parameter
+      value.toString(),
+      privateRental,
+      collectionAddress,
     );
     if (res) {
       return res;
@@ -105,14 +102,11 @@ export const processTonRent = async (
   initializer,
 ) => {
   try {
-    // This is handled inside the SDK now
-    // localStorage.setItem("processRent", JSON.stringify({ ... }));
-
     const res = await processRent(
       tokenAddress,
-      durationMinutes,
+      durationMinutes.toString(),
       sender,
-      value,
+      value.toString(),
       collection, // Pass the collection parameter
       index, // Pass the index parameter
       initializer, // Pass the initializer parameter
@@ -141,9 +135,6 @@ export const expireTonRent = async (
   collection,
 ) => {
   try {
-    // This is handled inside the SDK now
-    // localStorage.setItem("expireTonRent", JSON.stringify({ ... }));
-
     const res = await expire(
       tokenAddress,
       sender,
